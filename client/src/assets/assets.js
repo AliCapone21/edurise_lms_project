@@ -6,7 +6,7 @@ import upload_area from './upload_area.svg'
 import sketch from './sktech.svg'
 import microsoft_logo from './microsoft_logo.svg'
 import walmart_logo from './walmart_logo.svg'
-import accenture_logo from './accenture_logo.svg'
+import accenture_logo from './udemy.png'
 import adobe_logo from './adobe_logo.svg'
 import paypal_logo from './paypal_logo.svg'
 import course_1_thumbnail from './course_1.png'
@@ -94,24 +94,24 @@ export const assets = {
 export const dummyTestimonial = [
     {
         name: 'Donald Jackman',
-        role: 'SWE 1 @ Amazon',
+        role: 'Amazon',
         image: assets.profile_img_1,
         rating: 5,
-        feedback: 'I\'ve been using Imagify for nearly two years, primarily for Instagram, and it has been incredibly user-friendly, making my work much easier.',
+        feedback: 'Imagify has significantly improved my workflow. The AI-powered enhancements and batch processing save me hours of editing time every week!',
     },
     {
         name: 'Richard Nelson',
-        role: 'SWE 2 @ Samsung',
+        role: 'Samsung',
         image: assets.profile_img_2,
         rating: 4,
-        feedback: 'I\'ve been using Imagify for nearly two years, primarily for Instagram, and it has been incredibly user-friendly, making my work much easier.',
+        feedback: 'The platform is intuitive, and the image optimization tools are top-notch. It has helped our marketing team maintain high-quality visuals without extra effort.',
     },
     {
         name: 'James Washington',
-        role: 'SWE 2 @ Google',
+        role: 'Google',
         image: assets.profile_img_3,
         rating: 4.5,
-        feedback: 'I\'ve been using Imagify for nearly two years, primarily for Instagram, and it has been incredibly user-friendly, making my work much easier.',
+        feedback: 'Imagify’s ability to reduce file sizes without losing quality is a game-changer. It keeps our website running smoothly while maintaining crisp images.',
     },
 ];
 
@@ -180,7 +180,7 @@ export const dummyCourses = [
                 ]
             }
         ],
-        educator: "605c72efb3f1c2b1f8e4e1a1", 
+        educator: "605c72efb3f1c2b1f8e4e1a1",
         courseRatings: [
             {
                 userId: "user1",
@@ -192,7 +192,7 @@ export const dummyCourses = [
             }
         ],
         enrolledStudents: [
-        
+
         ]
     },
     {
@@ -259,7 +259,7 @@ export const dummyCourses = [
                 ]
             }
         ],
-        educator: "605c72efb3f1c2b1f8e4e1a4", 
+        educator: "605c72efb3f1c2b1f8e4e1a4",
         courseRatings: [
             {
                 userId: "user3",
@@ -271,7 +271,7 @@ export const dummyCourses = [
             }
         ],
         enrolledStudents: [
-           
+
         ]
     },
     {
@@ -338,7 +338,7 @@ export const dummyCourses = [
                 ]
             }
         ],
-        educator: "605c72efb3f1c2b1f8e4e1a7", 
+        educator: "605c72efb3f1c2b1f8e4e1a7",
         courseRatings: [
             {
                 userId: "user5",
@@ -350,7 +350,7 @@ export const dummyCourses = [
             }
         ],
         enrolledStudents: [
-           
+
         ]
     },
     {
@@ -417,7 +417,7 @@ export const dummyCourses = [
                 ]
             }
         ],
-        educator: "605c72efb3f1c2b1f8e4e1aa", 
+        educator: "605c72efb3f1c2b1f8e4e1aa",
         courseRatings: [
             {
                 userId: "user7",
