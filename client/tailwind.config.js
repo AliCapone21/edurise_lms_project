@@ -6,7 +6,7 @@ export default {
   ],
   theme: {
     extend: {
-      gridTemplateColumns:{
+      gridTemplateColumns: {
         'auto': 'repeat(auto-fit, minmax(200px, 1fr))'
       },
       spacing: {
@@ -25,7 +25,26 @@ export default {
       boxShadow: {
         'custom-card': '0px 4px 15px 2px rgba(0, 0, 0, 0.1)',
       },
+      keyframes: {
+        fadeInUp: {
+          '0%': { opacity: 0, transform: 'translateY(20px)' },
+          '100%': { opacity: 1, transform: 'translateY(0)' },
+        },
+        pulseSlow: {
+          '0%, 100%': { opacity: 1, transform: 'scale(1)' },
+          '50%': { opacity: 0.75, transform: 'scale(1.1)' },
+        },
+        bounceStar: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-4px)' },
+        },
+      },
+      animation: {
+        fadeInUp: 'fadeInUp 0.3s ease-out forwards',
+        pulseSlow: 'pulseSlow 3s ease-in-out infinite',
+        bounceStar: 'bounceStar 1.5s ease-in-out infinite',
+      },
     },
   },
   plugins: [],
-}
+};
