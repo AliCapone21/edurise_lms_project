@@ -99,4 +99,4 @@ npm run start
 
 ## 👥 Author
 
-Built with ❤️ by [Your Name]
+Built with ❤️ by Ali Farhodov

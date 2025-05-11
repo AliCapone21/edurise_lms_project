@@ -108,4 +108,4 @@ npm run dev
 
 ## 👥 Author
 
-Built by [Your Name]
+Built by Ali Farhodov
