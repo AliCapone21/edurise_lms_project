@@ -9,6 +9,8 @@ import { toast } from 'react-toastify';
 import Rating from '../../components/student/Rating';
 import Footer from '../../components/student/Footer';
 import Loading from '../../components/student/Loading';
+import CustomVideoPlayer from '../../components/student/CustomVideoPlayer';
+
 
 const Player = () => {
 
@@ -162,10 +164,7 @@ const Player = () => {
                   {playerData.lectureUrl.includes("youtube.com") || playerData.lectureUrl.includes("youtu.be") ? (
                       <YouTube iframeClassName='w-full aspect-video' videoId={playerData.lectureUrl.split('/').pop()} />
                   ) : (
-                      <video className='w-full aspect-video' controls>
-                        <source src={playerData.lectureUrl} type="video/mp4" />
-                        Your browser does not support the video tag.
-                      </video>
+                      <CustomVideoPlayer src={playerData.lectureUrl} />
                   )}
                   <div className='flex justify-between items-center mt-1'>
                     <p className='text-xl '>{playerData.chapter}.{playerData.lecture} {playerData.lectureTitle}</p>

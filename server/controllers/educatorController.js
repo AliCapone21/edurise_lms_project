@@ -6,23 +6,38 @@ import { Purchase } from '../models/Purchase.js';
 import User from '../models/User.js';
 import { clerkClient } from '@clerk/express';
 // import fs from 'fs' // Optional for cleanup
-
-// Update role to educator
+// Educator request handler
 export const updateRoleToEducator = async (req, res) => {
     try {
         const userId = req.auth.userId;
 
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.json({ success: false, message: 'User not found' });
+        }
+
+        // Prevent double requests
+        if (user.role === 'educator' || user.role === 'educator_pending') {
+            return res.json({ success: false, message: 'Request already sent or already an educator' });
+        }
+
+        // Update metadata in Clerk
         await clerkClient.users.updateUserMetadata(userId, {
-            publicMetadata: {
-                role: 'educator',
-            },
+            publicMetadata: { role: 'educator_pending' },
         });
 
-        res.json({ success: true, message: 'You can publish a course now' });
+        // Update role in MongoDB
+        await User.findByIdAndUpdate(userId, { role: 'educator_pending' });
+
+        return res.json({ success: true, message: 'Request sent. Please wait for admin approval.' });
+
     } catch (error) {
-        res.json({ success: false, message: error.message });
+        console.error('Educator role update error:', error);
+        return res.json({ success: false, message: error.message });
     }
 };
+
 
 // Add New Course (with optional video uploads)
 export const addCourse = async (req, res) => {

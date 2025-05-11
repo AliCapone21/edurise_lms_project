@@ -10,7 +10,16 @@ const AddCourse = () => {
   const editorRef = useRef(null);
   const quillRef = useRef(null);
 
-  const { backendUrl, getToken } = useContext(AppContext);
+  const { backendUrl, getToken, userRole } = useContext(AppContext);
+
+  if (userRole !== 'educator') {
+    return (
+        <div className="min-h-screen flex items-center justify-center text-red-500 font-semibold">
+          Unauthorized. Only educators can add courses.
+        </div>
+    );
+  }
+
 
   const [courseTitle, setCourseTitle] = useState('');
   const [coursePrice, setCoursePrice] = useState(0);
@@ -29,7 +38,6 @@ const AddCourse = () => {
     isPreviewFree: false,
     videoFile: null,
   });
-
   const handleChapter = (action, chapterId) => {
     if (action === 'add') {
       setShowChapterModal(true);
@@ -38,7 +46,9 @@ const AddCourse = () => {
     } else if (action === 'toggle') {
       setChapters(
           chapters.map((chapter) =>
-              chapter.chapterId === chapterId ? { ...chapter, collapsed: !chapter.collapsed } : chapter
+              chapter.chapterId === chapterId
+                  ? { ...chapter, collapsed: !chapter.collapsed }
+                  : chapter
           )
       );
     }
@@ -67,12 +77,14 @@ const AddCourse = () => {
       setShowPopup(true);
     } else if (action === 'remove') {
       setChapters(
-          chapters.map((chapter) => {
-            if (chapter.chapterId === chapterId) {
-              chapter.chapterContent.splice(lectureIndex, 1);
-            }
-            return chapter;
-          })
+          chapters.map((chapter) =>
+              chapter.chapterId === chapterId
+                  ? {
+                    ...chapter,
+                    chapterContent: chapter.chapterContent.filter((_, idx) => idx !== lectureIndex),
+                  }
+                  : chapter
+          )
       );
     }
   };
@@ -91,7 +103,7 @@ const AddCourse = () => {
 
         return {
           ...chapter,
-          chapterContent: [...chapter.chapterContent, newLecture], // ✅ Immutable update
+          chapterContent: [...chapter.chapterContent, newLecture],
         };
       }
       return chapter;
@@ -100,7 +112,6 @@ const AddCourse = () => {
     setChapters(updatedChapters);
     setShowPopup(false);
 
-    // ✅ Reset lectureDetails to prevent reuse
     setLectureDetails({
       lectureTitle: '',
       lectureDuration: '',
@@ -110,11 +121,14 @@ const AddCourse = () => {
     });
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!image) return toast.error('Thumbnail Not Selected');
+    if (!quillRef.current) return toast.error('Editor is not ready.');
+    if (!image) return toast.error('Thumbnail not selected');
+    if (chapters.length === 0 || chapters.some((ch) => ch.chapterContent.length === 0)) {
+      return toast.error('Please add at least one lecture to every chapter');
+    }
 
     const courseData = {
       courseTitle,
@@ -165,6 +179,7 @@ const AddCourse = () => {
       });
     }
   }, []);
+
 
   return (
       <div className="h-screen overflow-scroll flex flex-col items-start justify-between md:p-8 md:pb-0 p-4 pt-8 pb-0">
