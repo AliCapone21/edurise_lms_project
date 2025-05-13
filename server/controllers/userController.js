@@ -12,14 +12,14 @@ export const getUserData = async (req, res) => {
         const clerkUserId = req.auth.userId;
 
         // Try to find user in MongoDB using Clerk ID
-        let user = await User.findOne({ clerkId: clerkUserId });
+        let user = await User.findById(clerkUserId);
 
         // If not found, create one (first-time login)
         if (!user) {
             const { fullName, imageUrl, emailAddresses } = req.auth;
 
             user = await User.create({
-                clerkId: clerkUserId,
+                _id: clerkUserId,
                 name: fullName,
                 email: emailAddresses?.[0]?.emailAddress || '',
                 imageUrl,
