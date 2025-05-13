@@ -9,21 +9,31 @@ import stripe from "stripe"
 // Get User Data
 export const getUserData = async (req, res) => {
     try {
+        const clerkUserId = req.auth.userId;
 
-        const userId = req.auth.userId
+        // Try to find user in MongoDB using Clerk ID
+        let user = await User.findOne({ clerkId: clerkUserId });
 
-        const user = await User.findById(userId)
-
+        // If not found, create one (first-time login)
         if (!user) {
-            return res.json({ success: false, message: 'User Not Found' })
+            const { fullName, imageUrl, emailAddresses } = req.auth;
+
+            user = await User.create({
+                clerkId: clerkUserId,
+                name: fullName,
+                email: emailAddresses?.[0]?.emailAddress || '',
+                imageUrl,
+                role: 'student', // default role
+                enrolledCourses: []
+            });
         }
 
-        res.json({ success: true, user })
+        res.json({ success: true, user });
 
     } catch (error) {
-        res.json({ success: false, message: error.message })
+        res.json({ success: false, message: error.message });
     }
-}
+};
 
 // Purchase Course 
 export const purchaseCourse = async (req, res) => {
