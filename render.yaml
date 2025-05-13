@@ -1,0 +1,37 @@
+# render.yaml
+
+services:
+  - type: web
+    name: edurise-backend
+    env: node
+    plan: free
+    repo: https://github.com/AliCapone21/edurise_lms_project
+    branch: main
+    buildCommand: npm install
+    startCommand: node start.js
+    rootDir: server
+    envVars:
+      - key: CURRENCY
+        value: USD
+      - key: MONGODB_URI
+        value: your_mongodb_connection_string
+      - key: CLOUDINARY_NAME
+        value: your_cloudinary_name
+      - key: CLOUDINARY_API_KEY
+        value: your_cloudinary_api_key
+      - key: CLOUDINARY_SECRET_KEY
+        value: your_cloudinary_secret
+      - key: CLERK_WEBHOOK_SECRET
+        value: your_clerk_webhook_secret
+      - key: CLERK_PUBLISHABLE_KEY
+        value: your_clerk_publishable_key
+      - key: CLERK_SECRET_KEY
+        value: your_clerk_secret_key
+      - key: STRIPE_WEBHOOK_SECRET
+        value: your_stripe_webhook_secret
+      - key: STRIPE_PUBLISHABLE_KEY
+        value: your_stripe_publishable_key
+      - key: STRIPE_SECRET_KEY
+        value: your_stripe_secret_key
+      - key: OPENAI_API_KEY
+        value: your_openai_key
