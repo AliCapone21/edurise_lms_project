@@ -16,7 +16,17 @@ const CourseDetails = () => {
   const [courseData, setCourseData] = useState(null);
   const [playerData, setPlayerData] = useState(null);
   const [isAlreadyEnrolled, setIsAlreadyEnrolled] = useState(false);
-  const { backendUrl, currency, userData, calculateChapterTime, calculateCourseDuration, calculateRating, calculateNoOfLectures } = useContext(AppContext);
+  const {
+    backendUrl,
+    currency,
+    userData,
+    fetchUserEnrolledCourses, // ✅ Add this
+    calculateChapterTime,
+    calculateCourseDuration,
+    calculateRating,
+    calculateNoOfLectures
+  } = useContext(AppContext);
+
   const { getToken } = useAuth();
 
   const fetchCourseData = async () => {
@@ -39,7 +49,6 @@ const CourseDetails = () => {
       [index]: !prev[index],
     }));
   };
-
   const enrollCourse = async () => {
     try {
       if (!userData) return toast.warn('Login to Enroll');
@@ -53,7 +62,13 @@ const CourseDetails = () => {
       );
 
       if (data.success) {
-        window.location.replace(data.session_url);
+        if (data.session_url) {
+          // Stripe mode
+          window.location.href = data.session_url;
+        } else {
+          // Test mode — refresh the page
+          window.location.reload();
+        }
       } else {
         toast.error(data.message);
       }
@@ -61,6 +76,7 @@ const CourseDetails = () => {
       toast.error(error.message);
     }
   };
+
 
   useEffect(() => {
     fetchCourseData();

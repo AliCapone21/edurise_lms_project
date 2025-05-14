@@ -13,7 +13,7 @@ export const AppContextProvider = (props) => {
 
     const navigate = useNavigate();
     const { getToken } = useAuth();
-    const { user, clerk } = useUser(); // 🆕 added clerk
+    const { user, clerk } = useUser();
 
     const [showLogin, setShowLogin] = useState(false);
     const [userRole, setUserRole] = useState("student");
@@ -24,38 +24,39 @@ export const AppContextProvider = (props) => {
     // ✅ Fetch All Courses
     const fetchAllCourses = async () => {
         try {
-            const { data } = await axios.get(backendUrl + '/api/course/all');
+            const { data } = await axios.get(`${backendUrl}/api/course/all`);
             if (data.success) {
                 setAllCourses(data.courses);
             } else {
-                toast.error(data.message);
+                toast.error(data.message || "Failed to fetch courses");
             }
         } catch (error) {
-            toast.error(error.message);
+            toast.error("Error loading courses");
+            console.error("Courses Fetch Error:", error);
         }
     };
 
-    // ✅ Fetch User Data + Force Clerk metadata refresh
+    // ✅ Fetch User Data
     const fetchUserData = async () => {
         try {
-            await clerk?.user?.reload(); // 🆕 force refresh from Clerk
+            await clerk?.user?.reload?.(); // Safe reload if clerk user exists
 
             const token = await getToken();
-            const { data } = await axios.get(backendUrl + '/api/user/data', {
+            const { data } = await axios.get(`${backendUrl}/api/user/data`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
             if (data.success) {
                 setUserData(data.user);
-
-                const clerkRole = user.publicMetadata?.role;
+                const clerkRole = user?.publicMetadata?.role;
                 const dbRole = data.user.role;
                 setUserRole(clerkRole || dbRole || "student");
             } else {
-                toast.error(data.message);
+                toast.error(data.message || "Failed to load user data");
             }
         } catch (error) {
-            toast.error(error.message);
+            toast.error("Error loading user data");
+            console.error("User Data Fetch Error:", error);
         }
     };
 
@@ -63,35 +64,36 @@ export const AppContextProvider = (props) => {
     const fetchUserEnrolledCourses = async () => {
         try {
             const token = await getToken();
-            const { data } = await axios.get(backendUrl + '/api/user/enrolled-courses', {
+            const { data } = await axios.get(`${backendUrl}/api/user/enrolled-courses`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
-            if (data.success) {
-                setEnrolledCourses(data.enrolledCourses.reverse());
+            if (data.success && Array.isArray(data.enrolledCourses)) {
+                setEnrolledCourses([...data.enrolledCourses].reverse());
             } else {
-                toast.error(data.message);
+                toast.info("No enrolled courses found");
+                setEnrolledCourses([]);
             }
         } catch (error) {
-            toast.error(error.message);
+            toast.error("Error loading enrolled courses");
+            console.error("Enrolled Courses Fetch Error:", error);
         }
     };
 
-    // 🔢 Utilities
+    // 🔢 Utility Calculations
     const calculateChapterTime = (chapter) => {
-        let time = 0;
-        chapter.chapterContent.forEach(lecture => time += lecture.lectureDuration);
-        return humanizeDuration(time * 60 * 1000, { units: ["h", "m"] });
+        const totalMinutes = chapter.chapterContent.reduce(
+            (sum, lecture) => sum + (lecture.lectureDuration || 0),
+            0
+        );
+        return humanizeDuration(totalMinutes * 60000, { units: ["h", "m"] });
     };
 
     const calculateCourseDuration = (course) => {
-        let time = 0;
-        course.courseContent.forEach(chapter =>
-            chapter.chapterContent.forEach(lecture =>
-                time += lecture.lectureDuration
-            )
-        );
-        return humanizeDuration(time * 60 * 1000, { units: ["h", "m"] });
+        const totalMinutes = course.courseContent.reduce((sum, chapter) => {
+            return sum + chapter.chapterContent.reduce((s, lec) => s + lec.lectureDuration, 0);
+        }, 0);
+        return humanizeDuration(totalMinutes * 60000, { units: ["h", "m"] });
     };
 
     const calculateRating = (course) => {
@@ -101,22 +103,28 @@ export const AppContextProvider = (props) => {
     };
 
     const calculateNoOfLectures = (course) => {
-        return course.courseContent.reduce((count, chapter) => {
-            return count + (Array.isArray(chapter.chapterContent) ? chapter.chapterContent.length : 0);
-        }, 0);
+        return course.courseContent.reduce(
+            (count, chapter) =>
+                count + (Array.isArray(chapter.chapterContent) ? chapter.chapterContent.length : 0),
+            0
+        );
     };
 
-    // ⏳ Initial Loads
+    // ⏳ Load Initial Data
     useEffect(() => {
         fetchAllCourses();
     }, []);
 
     useEffect(() => {
-        if (user) {
-            fetchUserData();
-            fetchUserEnrolledCourses();
-        }
+        const loadUserAndCourses = async () => {
+            if (user) {
+                await fetchUserData(); // Ensure user is created in DB first
+                await fetchUserEnrolledCourses();
+            }
+        };
+        loadUserAndCourses();
     }, [user]);
+
 
     const value = {
         showLogin, setShowLogin,
