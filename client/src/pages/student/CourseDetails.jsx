@@ -63,11 +63,12 @@ const CourseDetails = () => {
 
       if (data.success) {
         if (data.session_url) {
-          // Stripe mode
+          // Only redirect if Stripe session is returned
           window.location.href = data.session_url;
         } else {
-          // Test mode — refresh the page
-          window.location.reload();
+          toast.success('Enrolled successfully!');
+          setIsAlreadyEnrolled(true); // update button immediately
+          fetchUserEnrolledCourses(); // refresh user's enrollments if needed
         }
       } else {
         toast.error(data.message);
@@ -76,6 +77,7 @@ const CourseDetails = () => {
       toast.error(error.message);
     }
   };
+
 
 
   useEffect(() => {

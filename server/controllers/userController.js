@@ -34,70 +34,67 @@ export const getUserData = async (req, res) => {
     }
 };
 
-const stripeInstance = new stripe(process.env.STRIPE_SECRET_KEY);
-
-// Purchase course
+// Purchase Course
 export const purchaseCourse = async (req, res) => {
+
     try {
-        const { courseId } = req.body;
-        const userId = req.auth.userId;
-        const { origin } = req.headers;
 
-        console.log("📦 Full request body:", req.body);
-        console.log("📦 Incoming courseId:", courseId);
+        const { courseId } = req.body
+        const { origin } = req.headers
 
-        const courseData = await Course.findById(courseId);
-        const userData = await User.findById(userId);
+
+        const userId = req.auth.userId
+
+        const courseData = await Course.findById(courseId)
+        const userData = await User.findById(userId)
 
         if (!userData || !courseData) {
-            return res.status(404).json({ success: false, message: 'User or course not found' });
+            return res.json({ success: false, message: 'Data Not Found' })
         }
 
-        // Prevent duplicate enrollment
-        if (userData.enrolledCourses.includes(courseId)) {
-            return res.json({ success: false, message: 'Already enrolled in this course' });
-        }
-
-        const amount = Number((courseData.coursePrice - courseData.discount * courseData.coursePrice / 100).toFixed(2));
-
-        // Create a purchase entry with 'pending' status
-        const purchase = await Purchase.create({
+        const purchaseData = {
             courseId: courseData._id,
-            userId: userData._id,
-            amount,
-            status: 'pending'
-        });
+            userId,
+            amount: (courseData.coursePrice - courseData.discount * courseData.coursePrice / 100).toFixed(2),
+        }
 
-        const currency = process.env.CURRENCY.toLowerCase();
+        const newPurchase = await Purchase.create(purchaseData)
+
+        // Stripe Gateway Initialize
+        const stripeInstance = new stripe(process.env.STRIPE_SECRET_KEY)
+
+        const currency = process.env.CURRENCY.toLocaleLowerCase()
+
+        // Creating line items to for Stripe
+        const line_items = [{
+            price_data: {
+                currency,
+                product_data: {
+                    name: courseData.courseTitle
+                },
+                unit_amount: Math.floor(newPurchase.amount) * 100
+            },
+            quantity: 1
+        }]
 
         const session = await stripeInstance.checkout.sessions.create({
             success_url: `${origin}/loading/my-enrollments`,
-            cancel_url: `${origin}/course/${courseId}`,
+            cancel_url: `${origin}/`,
+            line_items: line_items,
             mode: 'payment',
             metadata: {
-                purchaseId: purchase._id.toString()
-            },
-            line_items: [
-                {
-                    price_data: {
-                        currency,
-                        unit_amount: Math.floor(amount * 100), // Stripe requires amount in cents
-                        product_data: {
-                            name: courseData.courseTitle
-                        }
-                    },
-                    quantity: 1
-                }
-            ]
-        });
+                purchaseId: newPurchase._id.toString()
+            }
+        })
 
-        return res.json({ success: true, session_url: session.url });
+        res.json({ success: true, session_url: session.url });
+
 
     } catch (error) {
-        console.error('🔥 Stripe Enroll Error:', error);
-        res.status(500).json({ success: false, message: error.message });
+        res.json({ success: false, message: error.message });
     }
-};
+}
+
 
 // ✅ Get User's Enrolled Courses
 export const userEnrolledCourses = async (req, res) => {

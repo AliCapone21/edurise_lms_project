@@ -83,24 +83,25 @@ export const assets = {
 
 export const dummyTestimonial = [
     {
-        name: 'Donald Jackman',
-        role: 'Amazon',
+        name: 'Jacob Miller',
+        role: 'Software Engineering Student',
         image: assets.profile_img_1,
         rating: 5,
-        feedback: 'Imagify has significantly improved my workflow. The AI-powered enhancements and batch processing save me hours of editing time every week!',
+        feedback: 'EduRise helped me stay on track with my learning goals. The video previews and structured chapters made it easier to understand even complex topics.',
     },
     {
-        name: 'Richard Nelson',
-        role: 'Samsung',
+        name: 'Brandon Carter',
+        role: 'Backend Development Instructor',
         image: assets.profile_img_2,
-        rating: 4,
-        feedback: 'The platform is intuitive, and the image optimization tools are top-notch. It has helped our marketing team maintain high-quality visuals without extra effort.',
+        rating: 4.5,
+        feedback: 'As an educator, I found the course upload process straightforward. I especially appreciate the built-in quiz and content organization features.',
     },
     {
-        name: 'James Washington',
-        role: 'Google',
+        name: 'Daniel Brooks',
+        role: 'Platform Administrator',
         image: assets.profile_img_3,
-        rating: 4.5,
-        feedback: 'Imagify’s ability to reduce file sizes without losing quality is a game-changer. It keeps our website running smoothly while maintaining crisp images.',
+        rating: 4.8,
+        feedback: 'Managing user roles and monitoring activity on EduRise is simple and efficient. The admin tools give me full control without any clutter.',
     },
 ];
+
