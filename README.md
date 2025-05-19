@@ -1,102 +1,124 @@
-# 🧠 EduRise LMS - Backend
+# 🎓 EduRise LMS – Fullstack Learning Management System
 
-The backend of the EduRise platform, powering API logic, user roles, payments, and educator management.
-
----
-
-## 🔥 Features
-
-- Role-based authentication using **Clerk**
-- User metadata sync with **MongoDB**
-- Stripe integration for payments
-- Webhooks: Clerk + Stripe
-- File uploads using Multer (images + video)
-- Educator course management endpoints
-- Admin approval for new educators
+EduRise is a modern, full-featured Learning Management System (LMS) built with a scalable and modular architecture. It supports **students**, **educators**, and **administrators** through a seamless web interface powered by **React.js**, **Node.js**, **MongoDB**, **Clerk**, and **Stripe**.
 
 ---
 
-## 🧑‍💻 API Overview
+## 🔗 Live Deployment
 
-### 🧑‍🏫 Educator Routes
-
-| Route | Description |
-|-------|-------------|
-| `GET /api/educator/requests` | List all pending educator requests *(admin only)* |
-| `POST /api/educator/approve/:userId` | Approve/Reject educator *(admin only)* |
-| `GET /api/educator/courses` | Get courses created by educator |
-| `POST /api/educator/add-course` | Add a new course with chapters, lectures |
-| `GET /api/educator/dashboard` | Dashboard overview for educators |
-
-### 👨‍🎓 Student Routes
-
-| Route | Description |
-|-------|-------------|
-| `GET /api/course/all` | Get all published courses |
-| `GET /api/user/enrolled-courses` | Fetch enrolled courses for student |
-
-### 🔐 Webhooks
-
-- `POST /api/webhook/clerk` — sync user on login/update/delete
-- `POST /api/webhook/stripe` — track payment intent + update enrollment
+- **Frontend**: [edurise-lms-project.vercel.app](https://edurise-lms-project.vercel.app)
+- **Backend**: [edurise-backend.onrender.com](https://edurise-backend.onrender.com)
 
 ---
 
-## 🧪 Test With Postman
+## 📦 Project Structure
 
-Use bearer tokens via Clerk for protected endpoints.
-
-**Example:**
-
-```http
-GET /api/educator/requests
-Authorization: Bearer <Clerk JWT Token>
+```
+edurise_lms_project/
+├── client/         # Frontend (React + Clerk + Tailwind)
+├── server/         # Backend (Node.js + Express + MongoDB)
+├── render.yaml     # Render deployment config
+└── README.md       # Root README (this file)
 ```
 
 ---
 
-## ⚙️ Setup Instructions
+## ⚙️ Tech Stack Overview
 
-1. Clone the repo
+| Layer       | Technology                       |
+|-------------|----------------------------------|
+| Frontend    | React.js (Vite), Tailwind CSS    |
+| Backend     | Node.js, Express.js              |
+| Database    | MongoDB with Mongoose            |
+| Auth        | Clerk.dev (OAuth + JWT)          |
+| Payments    | Stripe                           |
+| Rich Text   | Quill.js                         |
+| Deployment  | Vercel (Frontend), Render (API)  |
+
+---
+
+## 🚀 Features
+
+### 👨‍🎓 Students
+- Register/login securely using Clerk
+- Browse, preview, and enroll in courses
+- Watch lectures and track progress
+- AI-assisted course search when no match is found
+
+### 🧑‍🏫 Educators
+- Request educator role
+- After approval: create courses, chapters, lectures
+- Manage enrollments and track student views
+- Upload multimedia and set pricing via Stripe
+
+### 🛡️ Admins
+- Manage educator requests
+- Access platform-level statistics
+- Oversee user activity and maintain quality
+
+---
+
+## 🧪 Development Setup
+
+### 1. Clone the Repo
 ```bash
-git clone https://github.com/yourusername/edurise-backend.git
-cd edurise-backend
+git clone https://github.com/AliCapone21/edurise_lms_project.git
+cd edurise_lms_project
 ```
 
-2. Install dependencies
+### 2. Frontend Setup
 ```bash
+cd client
 npm install
+npm run dev
 ```
 
-3. Create `.env` file
-
-```
-PORT=5000
-MONGODB_URI=your_mongodb_connection
-CLERK_SECRET_KEY=your_clerk_secret
-CLERK_WEBHOOK_SECRET=your_clerk_webhook_secret
-STRIPE_SECRET_KEY=your_stripe_secret
-STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret
-```
-
-4. Run the backend server
+### 3. Backend Setup
 ```bash
+cd ../server
+npm install
 npm run start
 ```
 
----
-
-## 🧰 Tech Stack
-
-- Node.js + Express
-- MongoDB + Mongoose
-- Clerk (Auth)
-- Stripe (Payments)
-- Multer (Uploads)
-- Svix (Clerk Webhooks)
+> 🔐 Configure both projects with proper `.env` variables as documented in their respective README files.
 
 ---
 
-## 👥 Author
+## 📁 Environment Variables
 
-Built with ❤️ by Ali Farhodov
+**Frontend (`client/.env`):**
+```
+VITE_BACKEND_URL=https://edurise-backend.onrender.com
+VITE_CURRENCY=$
+```
+
+**Backend (`server/.env`):**
+```
+PORT=5000
+MONGODB_URI=<your-mongo-uri>
+CLERK_SECRET_KEY=<your-clerk-secret>
+CLERK_WEBHOOK_SECRET=<your-clerk-webhook-secret>
+STRIPE_SECRET_KEY=<your-stripe-secret>
+STRIPE_WEBHOOK_SECRET=<your-stripe-webhook-secret>
+```
+
+---
+
+## 📌 Notes
+
+- All educator actions are **role-gated** and must be approved by the admin.
+- Webhooks from Clerk and Stripe are validated and used for syncing metadata and payment statuses.
+- The project uses **JWT** middleware and role-based guards for API access.
+
+---
+
+## 📘 Documentation
+
+- Frontend details in [`client/README.md`](./client/README.md)
+- Backend details in [`server/README.md`](./server/README.md)
+
+---
+
+## 👨‍💻 Author
+
+Built with ❤️ by **Ali Farhodov**

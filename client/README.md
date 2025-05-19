@@ -4,7 +4,7 @@ EduRise is a full-featured Learning Management System (LMS) allowing **students*
 
 ## 🌐 Live Demo
 
-> Coming soon...
+> [edurise-lms-project.vercel.app](https://edurise-lms-project.vercel.app)
 
 ---
 
